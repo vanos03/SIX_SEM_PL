@@ -12,6 +12,17 @@ class PQ{
             b = temp;
         }
 
+        T* area_mas(T *mas, int size){
+            T *tmp = new T[size];
+            for (int i = 0; i < size; i++)
+                tmp[i] = mas[i];
+            mas = new T[size+1];
+            for (int i = 0; i < size; i++)
+                mas[i] = tmp[i];
+            delete [] tmp;
+            return mas;
+        }
+
         void sort_heap(int i){
             unsigned int left = 2*i+1;
             unsigned int right = 2*i+2; 
@@ -45,6 +56,9 @@ class PQ{
         int get_size(){return this->size;}
 
         void insert(T new_item){
+
+            this->mas = area_mas(this->mas, this->size);
+            
             unsigned int i = this->size;
             unsigned int parent = (i-1)/2;
             this->mas[i] = new_item;
@@ -93,25 +107,25 @@ class PQ{
 };
 
 
-#define N 100
+// #define N 100
 
-template <class T>
-void test_pq(){
-    PQ<T> pq(N);
+// template <class T>
+// void test_pq(){
+//     PQ<T> pq(N);
 
-    for (int i = 1; i < N; i++)
-        pq.insert(i);
+//     for (int i = 1; i < N; i++)
+//         pq.insert(i);
 
-    pq.print();
-    std::cout << std::endl;
-    pq.del_max();
-    pq.print();
+//     pq.print();
+//     std::cout << std::endl;
+//     pq.del_max();
+//     pq.print();
 
 
-}
+// }
 
-int main(){
+// int main(){
     
-    test_pq<int>();
-    return 0;
-}
+//     test_pq<int>();
+//     return 0;
+// }

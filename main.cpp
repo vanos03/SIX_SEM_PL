@@ -1,19 +1,18 @@
 #include <iostream>
-#include "priority_queue.h"
+#include "priority_queue.cpp"
 
-template <class T>
-void test_pq(){
-    PQ<T> pq(5);
-    // pq.get_size();
-    pq.is_empty();
-    pq.insert(1);
-    pq.insert(1);
-    // if (pq.is_empty()) std::cout << "empty";
+#define N 100
 
-}
 
 int main(){
     
-    test_pq<int>();
-    return 0;
+    PQ<int> pq(N);
+
+    for (int i = 1; i < N; i++)
+        pq.insert(i);
+
+    pq.print();
+    std::cout << std::endl;
+    pq.del_max();
+    pq.print();
 }
