@@ -130,8 +130,8 @@ class Map{
                 return NULL;
             }
         }
-        void del(T key);
-        void del_all();
+
+        void del_all(){this->root = NULL;}
         
 
 
@@ -144,7 +144,7 @@ class Map{
 int main(){
     Map<int> test;
     for (int i = 1; i < N; i++)
-        test.insert(i, i);
+        test.insert(i, i*2);
 
     int a = 10;
     if (test.search(a) == NULL) {
@@ -154,6 +154,13 @@ int main(){
     }
 
     std::cout << "get date by key: " << test.get_date(a) << std::endl;
+
+    test.del_all();
+    if (test.search(a) == NULL) {
+        std::cout << a << " not exist" << std::endl;
+    } else {
+        std::cout << a << " is exist" << std::endl;
+    }
 
     return 0;
 }
