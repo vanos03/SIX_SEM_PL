@@ -13,12 +13,14 @@ class Map{
                 Y data;
                 Node<T>* left;
                 Node<T>* right;
+                int height;
 
                 Node(T key, Y data){
                     this->key = key;
                     this->data = data;
                     this->left = NULL;
                     this->right = NULL;
+                    this->height = 1;
                 }
         };
 
@@ -35,39 +37,41 @@ class Map{
             if (node == NULL) return 0;
             return 1 + std::max(height(node->left), height(node->right));
         }
-        void left_rotate(Node<T>*& node){
-            Node<T>* tmp = node->right;
-            node->right = tmp->left;
-            tmp->left = node;
-            node = tmp;
-        }
-        void right_rotate(Node<T>*& node){
-            Node<T>* tmp = node->left;
-            node->right = tmp->right;
-            tmp->right = node;
-            node = tmp;
-        }
+         int get_height(Node<T>* node) {
+        if (node == NULL) return 0;
+        return node->height;
+    }
 
-        void balance(Node<T>*& node){
-            if(node != NULL){
-                if ((height(node->right) - height(node->left)) > 1){
-                    if(height(node->right->right) >= height(node->right->left)){
-                        left_rotate(node);
-                    } else {
-                        right_rotate(node->right);
-                        left_rotate(node);
-                    }
-                }
-                if ((height(node->right) - height(node->left)) < -1){
-                    if(height(node->left->left) >= height(node->left->right)){
-                        right_rotate(node);
-                    } else {
-                        left_rotate(node->left);
-                        right_rotate(node);
-                    }
-                }
-            }
-        }
+    int get_balance_fcktr(Node<T>* node) {
+        if (node == NULL) return 0;
+        return get_height(node->left) - get_height(node->right);
+    }
+
+    Node<T>* rotate_right(Node<T>* y) {
+        Node<T>* x = y->left;
+        Node<T>* T2 = x->right;
+
+        x->right = y;
+        y->left = T2;
+
+        y->height = std::max(get_height(y->left), get_height(y->right)) + 1;
+        x->height = std::max(get_height(x->left), get_height(x->right)) + 1;
+
+        return x;
+    }
+
+    Node<T>* rotate_left(Node<T>* x) {
+        Node<T>* y = x->right;
+        Node<T>* T2 = y->left;
+
+        y->left = x;
+        x->right = T2;
+
+        x->height = std::max(get_height(x->left), get_height(x->right)) + 1;
+        y->height = std::max(get_height(y->left), get_height(y->right)) + 1;
+
+        return y;
+    }
 
     public:
         Node<T>* root;
@@ -75,34 +79,22 @@ class Map{
         Map(){root = NULL;}
         Map(const Map& a){this->root = clone(a.root);}
 
-        void insert(T key, Y data){
-            Node<T>* new_el = new Node<T>(key, data);
+         Node<T>* insert_node(Node<T>* node, T key, Y data) {
+            if (node == NULL) return new Node<T>(key, data);
 
-            if (this->root == NULL){ 
-                this->root = new_el;
-            } else{
-                Node<T>* curr = this->root;
-                Node<T>* parent = NULL;
+            if (key < node->key)
+                node->left = insert_node(node->left, key, data);
+            else if (key > node->key)
+                node->right = insert_node(node->right, key, data);
 
-                while(TRUE){
-                    parent = curr;
-                    if (key < curr->key){
-                        curr = curr->left;
-                        if(curr == NULL){
-                            parent->left = new_el;
-                            break;
-                        }
-                    } else{
-                        curr = curr->right;
-                        if(curr == NULL){
-                            parent->right = new_el;
-                            break;
-                        }
-                    }
-                }
-            }
-            balance(new_el);
-        } 
+            node->height = 1 + std::max(get_height(node->left), get_height(node->right));
+
+            if (get_balance_fcktr(node) > 1 && key < node->left->key) return rotate_right(node);
+            if (get_balance_fcktr(node) < -1 && key > node->right->key) return rotate_left(node);
+
+            return node;
+        }
+        void insert(T key, Y data) {this->root = insert_node(root, key, data);}
 
         Node<T>* search(T key){
             Node<T>* curr = this->root;
@@ -130,10 +122,28 @@ class Map{
             }
         }
 
+        int height_helper(Node<T>* node) {
+            if (node == nullptr) return 0;
+            
+            int leftHeight = height_helper(node->left);
+            int rightHeight = height_helper(node->right);
+
+            return std::max(leftHeight, rightHeight) + 1;
+        }
+
+        int get_height(){
+            return height_helper(this->root);
+        }
+
+        void print_tree(Node<T>* node, int level = 0, char prefix = ' ') {
+            if (node != nullptr) {
+                print_tree(node->right, level + 1, '/');
+                std::cout << std::string(level * 4, ' ') << prefix << node->key << std::endl;
+                print_tree(node->left, level + 1, '\\');
+            }
+        }
+
         void del_all(){this->root = NULL;}
-        
-
-
         ~Map(){this->root = NULL;}
 };
 
@@ -145,7 +155,9 @@ int main(){
     for (int i = 1; i < N; i++)
         test.insert(i, (double)i/5);
 
-    int a = 11;
+    test.print_tree(test.root);
+
+     int a = 11;
     if (test.search(a) == NULL) {
         std::cout << a << " not exist" << std::endl;
     } else {
@@ -153,6 +165,7 @@ int main(){
     }
 
     std::cout << "get date by key: " << test.get_date(a) << std::endl;
+    std::cout << "height: " << test.get_height() << std::endl;
 
     test.del_all();
     if (test.search(a) == NULL) {
