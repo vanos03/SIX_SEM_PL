@@ -1,21 +1,20 @@
-
 #include <iostream>
 
 #define TRUE 1
 
 
-template<class T>
+template<class T, class Y>
 class Map{
     private:
     template<class U>
         class Node{
             public:
                 T key;
-                T data;
+                Y data;
                 Node<T>* left;
                 Node<T>* right;
 
-                Node(T key, T data){
+                Node(T key, Y data){
                     this->key = key;
                     this->data = data;
                     this->left = NULL;
@@ -76,7 +75,7 @@ class Map{
         Map(){root = NULL;}
         Map(const Map& a){this->root = clone(a.root);}
 
-        void insert(T key, T data){
+        void insert(T key, Y data){
             Node<T>* new_el = new Node<T>(key, data);
 
             if (this->root == NULL){ 
@@ -123,7 +122,7 @@ class Map{
             if (this->root == NULL) return 0;
             if (this->root != NULL) return 1;
         }
-        T get_date(T key){
+        Y get_date(T key){
             if (search(key) != NULL) {
                 return search(key)->data;
             } else {
@@ -142,11 +141,11 @@ class Map{
 #define N 100
 
 int main(){
-    Map<int> test;
+    Map<int, double> test;
     for (int i = 1; i < N; i++)
-        test.insert(i, i*2);
+        test.insert(i, (double)i/5);
 
-    int a = 10;
+    int a = 11;
     if (test.search(a) == NULL) {
         std::cout << a << " not exist" << std::endl;
     } else {
