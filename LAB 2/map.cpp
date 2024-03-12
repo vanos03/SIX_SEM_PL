@@ -73,27 +73,42 @@ class Map{
         return y;
     }
 
+    Node<T>* insert_node(Node<T>* node, T key, Y data) {
+        if (node == NULL) return new Node<T>(key, data);
+
+        if (key < node->key)
+            node->left = insert_node(node->left, key, data);
+        else if (key > node->key)
+            node->right = insert_node(node->right, key, data);
+
+        node->height = 1 + std::max(get_height(node->left), get_height(node->right));
+        int balance = get_balance_fcktr(node);
+
+        if (balance > 1 && key < node->left->key)
+            return rotate_right(node);
+
+        if (balance < -1 && key > node->right->key)
+            return rotate_left(node);
+
+        if (balance > 1 && key > node->left->key) {
+            node->left = rotate_left(node->left);
+            return rotate_right(node);
+        }
+
+        if (balance < -1 && key < node->right->key) {
+            node->right = rotate_right(node->right);
+            return rotate_left(node);
+        }
+
+        return node;
+    }
+
     public:
         Node<T>* root;
 
         Map(){root = NULL;}
         Map(const Map& a){this->root = clone(a.root);}
-
-         Node<T>* insert_node(Node<T>* node, T key, Y data) {
-            if (node == NULL) return new Node<T>(key, data);
-
-            if (key < node->key)
-                node->left = insert_node(node->left, key, data);
-            else if (key > node->key)
-                node->right = insert_node(node->right, key, data);
-
-            node->height = 1 + std::max(get_height(node->left), get_height(node->right));
-
-            if (get_balance_fcktr(node) > 1 && key < node->left->key) return rotate_right(node);
-            if (get_balance_fcktr(node) < -1 && key > node->right->key) return rotate_left(node);
-
-            return node;
-        }
+         
         void insert(T key, Y data) {this->root = insert_node(root, key, data);}
 
         Node<T>* search(T key){
@@ -125,10 +140,10 @@ class Map{
         int height_helper(Node<T>* node) {
             if (node == nullptr) return 0;
             
-            int leftHeight = height_helper(node->left);
-            int rightHeight = height_helper(node->right);
+            int left_height = height_helper(node->left);
+            int right_height = height_helper(node->right);
 
-            return std::max(leftHeight, rightHeight) + 1;
+            return std::max(left_height, right_height) + 1;
         }
 
         int get_height(){
@@ -148,12 +163,19 @@ class Map{
 };
 
 
-#define N 100
+#define N 20
 
 int main(){
     Map<int, double> test;
-    for (int i = 1; i < N; i++)
-        test.insert(i, (double)i/5);
+    // for (int i = 1; i < N; i++)
+    //     test.insert(i, (double)i/5);
+
+    test.insert(2, 5);
+    test.insert(4, 5);
+    test.insert(3, 5);
+ 
+
+     
 
     test.print_tree(test.root);
 
