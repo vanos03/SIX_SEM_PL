@@ -138,7 +138,7 @@ class Node{
 
         Node<T, Y>* search(T key){
             int i = 0;
-            while ((i < this->curr_size) && (key < this->mas[i].key)) i++;
+            while ((i < this->curr_size) && (key > this->mas[i].key)) i++;
             if (key == this->mas[i].key)
                 return this;
             else if (this->leaf == TRUE)
@@ -281,12 +281,12 @@ int main(){
     tree.insert(29, 2);
     // tree.insert(38, 2);
 
-
-
-    // dict_t<int, int> res = tree.search(9);
-    // std::cout << " " << res.key <<  " " << res.data << std::endl;
-    // tree.print_tree();
     tree.print_keys();
+
+    dict_t<int, int> res = tree.search(35);
+    std::cout << res.key <<  " " << res.data << std::endl;
+    // tree.print_tree();
+    
     
     return 0;
 }
