@@ -90,45 +90,18 @@ class Node{
         }
 
 
-        // void insert_non_full(dict_t<T, Y> new_elems, int t){
-        //     int i = this->curr_size-1;
-
-        //     if (this->leaf == TRUE){
-        //         while((i >= 0) && (new_elems.key < this->mas[i].key)){ 
-        //             this->mas[i+1].key = this->mas[i].key;
-        //             i--;
-        //         }
-        //         this->insert_to_node(new_elems, t);
-        //     }
-
-        //     if (this->leaf == FALSE){
-        //         while((i >= 0) && (new_elems.key < this->mas[i].key)) i--;
-
-        //         if (this->children[i]->curr_size == 2*t-1){ 
-        //             this->split_child(i + 1, this->children[i + 1], t);
-        //             if (this->mas[i+1].key < new_elems.key) i++;
-        //         }
-        //         this->children[i+1]->insert_non_full(new_elems, t);
-            
-        //     }
-        // }
-
-
         void insert_non_full(dict_t<T, Y> new_elems, int t){
             int i = this->curr_size-1;
 
             if (this->leaf == TRUE){
                 while((i >= 0) && (new_elems.key < this->mas[i].key)){ 
                     this->mas[i+1].key = this->mas[i].key;
-                    this->mas[i+1].data = this->mas[i].data;
                     i--;
                 }
-                this->mas[i+1].key = new_elems.key;
-                this->mas[i+1].data = new_elems.data;
+                // this->insert_to_node(new_elems, t);
+                this->mas[i+1] = new_elems;
                 this->curr_size++;
-            }
-
-            else {
+            }else {
                 while((i >= 0) && (new_elems.key < this->mas[i].key)) i--;
 
                 if (this->children[i+1]->curr_size == 2*t-1){ 
@@ -138,6 +111,31 @@ class Node{
                 this->children[i+1]->insert_non_full(new_elems, t);
             }
         }
+
+        // void insert_non_full(dict_t<T, Y> new_elems, int t){
+        //     int i = this->curr_size-1;
+
+        //     if (this->leaf == TRUE){
+        //         while((i >= 0) && (new_elems.key < this->mas[i].key)){ 
+        //             this->mas[i+1].key = this->mas[i].key;
+        //             this->mas[i+1].data = this->mas[i].data;
+        //             i--;
+        //         }
+        //         this->mas[i+1].key = new_elems.key;
+        //         this->mas[i+1].data = new_elems.data;
+        //         this->curr_size++;
+        //     }
+
+        //     else {
+        //         while((i >= 0) && (new_elems.key < this->mas[i].key)) i--;
+
+        //         if (this->children[i+1]->curr_size == 2*t-1){ 
+        //             this->split_child(i + 1, this->children[i + 1], t);
+        //             if (this->mas[i+1].key < new_elems.key) i++;
+        //         }
+        //         this->children[i+1]->insert_non_full(new_elems, t);
+        //     }
+        // }
 
         Node<T, Y>* search(T key){
             int i = 0;
@@ -166,31 +164,50 @@ class Btree_map{
         void insert(T key, Y data);
         dict_t<T, Y> search(T key);
 
-        void print_tree_rec(Node<T, Y>* node, Node<T, Y>* parent, int level) {
+        // void print_tree_rec(Node<T, Y>* node, Node<T, Y>* parent, int level) {
+        //     if (node != nullptr) {
+        //         for (int i = 0; i < node->curr_size; ++i) {
+        //             print_tree_rec(node->children[i], node, level + 1);
+        //             for (int j = 0; j < level; ++j) {
+        //                 std::cout << "    ";
+        //             }
+        //             std::cout << " " << node->mas[i].key ;
+        //             if (parent != nullptr) {
+        //                 std::cout << " (" << parent->mas[0].key << ")" << std::endl;
+        //             } else {
+        //                 std::cout << " (Root)" << std::endl;
+        //             }
+        //         }
+        //         print_tree_rec(node->children[node->curr_size], node, level + 1);
+        //     }
+        // }
+
+        // void print_tree() {
+        //     if (root != nullptr) {
+        //         print_tree_rec(root, nullptr, 0);
+        //     } else {
+        //         std::cout << "Tree is empty" << std::endl;
+        //     }
+        // }
+
+        void print_tree_rec(Node<T, Y>* node, int level) {
             if (node != nullptr) {
+                std::cout << "lvl " << level << ": ";
                 for (int i = 0; i < node->curr_size; ++i) {
-                    print_tree_rec(node->children[i], node, level + 1);
-                    for (int j = 0; j < level; ++j) {
-                        std::cout << "    ";
-                    }
-                    std::cout << " " << node->mas[i].key ;
-                    if (parent != nullptr) {
-                        std::cout << " (" << parent->mas[0].key << ")" << std::endl;
-                    } else {
-                        std::cout << " (Root)" << std::endl;
-                    }
+                    std::cout << node->mas[i].key << " ";
                 }
-                print_tree_rec(node->children[node->curr_size], node, level + 1);
+                std::cout << std::endl;
+                for (int i = 0; i <= node->curr_size; ++i) 
+                    print_tree_rec(node->children[i], level + 1);
             }
         }
 
-        void printTree() {
-            if (root != nullptr) {
-                print_tree_rec(root, nullptr, 0);
-            } else {
-                std::cout << "Tree is empty" << std::endl;
-            }
+        void print_keys() {
+            std::cout << "Keys in the tree:" << std::endl;
+            print_tree_rec(root, 0);
         }
+
+
 
 };
 
@@ -209,6 +226,7 @@ void Btree_map<T, Y>::insert(T key, Y data){
     if(this->root == NULL){
         this->root = new Node<T, Y>(this->t, TRUE);
         this->root->insert_to_node(new_elems, this->t);
+        this->root->curr_size = 1;
     } else {
         Node<T, Y>* curr = this->root;
         if (curr->curr_size == 2*t-1){
@@ -255,15 +273,20 @@ Btree_map<T, Y>::~Btree_map() {}
 int main(){
 
     Btree_map<int, int> tree(3); 
-    for (int i = N-1; i < N*2; i++)
+    for (int i = N-1; i < N*2; i++){
         tree.insert(i, i*i);
+        tree.print_keys();
+        std::cout << std::endl;
+    }
     tree.insert(38, 2);
+    tree.insert(22, 2);
 
 
 
     // dict_t<int, int> res = tree.search(9);
     // std::cout << " " << res.key <<  " " << res.data << std::endl;
-    tree.printTree();
+    // tree.print_tree();
+    tree.print_keys();
     
     return 0;
 }
