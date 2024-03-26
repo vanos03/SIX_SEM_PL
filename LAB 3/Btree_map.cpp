@@ -64,7 +64,6 @@ class Node{
             sort(t);
         }
     
-
         void split_child(int i,  Node<T, Y>* node, int t){
             Node<T, Y>* tmp = new Node<T, Y>(t, node->leaf);
             tmp->curr_size = t-1;
@@ -206,9 +205,6 @@ class Btree_map{
             std::cout << "Keys in the tree:" << std::endl;
             print_tree_rec(root, 0);
         }
-
-
-
 };
 
 template<class T, class Y>
