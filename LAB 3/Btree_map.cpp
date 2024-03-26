@@ -73,13 +73,13 @@ class Node{
                 tmp->mas[j] = node->mas[j+t];
 
             if (node->leaf == FALSE){
-                for (int j = 0; j < t-1; j++)
+                for (int j = 0; j < t; j++)
                     tmp->children[j] = node->children[j+t];
             }
 
             node->curr_size = t-1;
-            for (int j = this->curr_size; j >= i+1; j--)
-                this->children[j] = this->children[j+1];
+            for (int j = node->curr_size; j >= i+1; j--)
+                this->children[j+1] = this->children[j];
 
             this->children[i+1] = tmp;
             for (int j = this->curr_size-1; j >= i; j--)
@@ -280,6 +280,10 @@ int main(){
     }
     tree.insert(38, 2);
     tree.insert(22, 2);
+    tree.insert(22, 2);
+    tree.insert(27, 2);
+    tree.insert(29, 2);
+    // tree.insert(38, 2);
 
 
 
