@@ -160,6 +160,7 @@ class Btree_map{
 
         int is_empty();
         void del_all();
+        void ins(Node<T, Y>* node, T key, Y data);
         void insert(T key, Y data);
         dict_t<T, Y> search(T key);
 
@@ -207,6 +208,11 @@ class Btree_map{
         }
 };
 
+
+
+
+
+
 template<class T, class Y>
 Btree_map<T, Y>::Btree_map(int new_rang){
     this->root = new Node<T, Y>(new_rang, TRUE);
@@ -214,7 +220,7 @@ Btree_map<T, Y>::Btree_map(int new_rang){
 }
 
 template<class T, class Y>
-void Btree_map<T, Y>::insert(T key, Y data){
+void Btree_map<T, Y>::ins(Node<T, Y>* node, T key, Y data){
     dict_t<T, Y> new_elems;
     new_elems.key = key;
     new_elems.data = data;
@@ -224,7 +230,7 @@ void Btree_map<T, Y>::insert(T key, Y data){
         this->root->insert_to_node(new_elems, this->t);
         this->root->curr_size = 1;
     } else {
-        Node<T, Y>* curr = this->root;
+        Node<T, Y>* curr = node;
         if (curr->curr_size == 2*t-1){
             Node<T, Y>* new_root = new Node<T, Y>(this->t, FALSE);
 
@@ -240,6 +246,12 @@ void Btree_map<T, Y>::insert(T key, Y data){
         curr->insert_non_full(new_elems, this->t);
     }
 }
+
+template<class T, class Y>
+void Btree_map<T, Y>::insert(T key, Y data){
+    ins(this->root, key, data);
+}
+
 
 template<class T, class Y>
 dict_t<T, Y> Btree_map<T, Y>::search(T key){
@@ -269,7 +281,7 @@ Btree_map<T, Y>::~Btree_map() {}
 int main(){
 
     Btree_map<int, int> tree(3); 
-    for (int i = N-1; i < N*2; i++){
+    for (int i = N-1; i < N*20; i++){
         tree.insert(i, i*i);
         tree.print_keys();
         std::cout << std::endl;
@@ -279,7 +291,7 @@ int main(){
     tree.insert(22, 2);
     tree.insert(27, 2);
     tree.insert(29, 2);
-    // tree.insert(38, 2);
+    tree.insert(38, 2);
 
     tree.print_keys();
 

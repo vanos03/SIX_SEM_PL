@@ -1,4 +1,5 @@
 all:
-  g++ Btree_map.cpp -o map
+	g++ Btree_map.cpp -o map
+
 clean:
-  rm *.o map
+	rm *.o map
