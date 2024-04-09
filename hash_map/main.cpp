@@ -17,9 +17,9 @@ int main() {
     std::cout << "size: " << map.get_size() << std::endl;
     map.print_vec();
     map.del_el(1);
-    std::cout << std::hash<int>{}(1) << std::endl;
+
     std::cout << "size: " << map.get_size() << std::endl;
     map.print_vec();
-    // map.del_all();
+    map.dell_all();
     return 0;
 }

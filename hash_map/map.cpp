@@ -36,6 +36,7 @@ public:
     dict_t<T, Y>& operator[](T key);
     void set_ff(int new_ff);
     void del_el(T key);
+    void dell_all();
 };
 
 
@@ -43,12 +44,11 @@ template<class T, class Y>
 void Hash_map<T,Y>::del_el(T key) {
     int h_key = std::hash<T>{}(key) % m;
      
-    for (int i = 0; i < m; i++) {
-               
+    for (int i = 0; i < m; i++) {   
         if (mas_list[i].first != nullptr) {
-            std::cout << mas_list[i].first->key << " " << h_key << std::endl;
+            // std::cout << mas_list[i].first->key << " " << h_key << std::endl;
             if (mas_list[i].first->key == h_key) {
-                mas_list[h_key].clear();
+                mas_list[i].clear();
                 size--;
                 
                 break;
@@ -56,8 +56,6 @@ void Hash_map<T,Y>::del_el(T key) {
         }
     }
 }
-
-
 
 template<class T, class Y>
 void Hash_map<T,Y>::rehash_map() {
@@ -78,31 +76,11 @@ void Hash_map<T,Y>::rehash_map() {
             curr = curr->next;
         }
     }
-    
-    // for (int i = 0; i < m; i++){
-    //     if(mas_list_tmp[i].first == nullptr) size++;
-    // }
 
     delete[] mas_list;
     mas_list = mas_list_tmp;
 }
 
-
-// template<class T, class Y>
-// void Hash_map<T,Y>::insert(T key, Y data) {
-//     int h_key = std::hash<T>{}(key) % m; 
-//     size++;
-//     // std::cout << "size: " << this->size << std::endl;
-    
-//     fill_fac = static_cast<float>(this->size) / m;
-//     // std::cout << "ff: " << fill_fac << std::endl;
-
-//     while(fill_fac >= max_ff) {
-//         rehash_map();
-//         fill_fac = static_cast<float>(this->size) / m;
-//     }
-
-// }
 
 template<class T, class Y>
 void Hash_map<T,Y>::insert(T key, Y data) {
@@ -110,11 +88,7 @@ void Hash_map<T,Y>::insert(T key, Y data) {
 
     int new_cell_added = mas_list[h_key].insert(key, data, h_key);
 
-     size++;
-    
-
-    // std::cout << "size: " << this->size << std::endl;
-    
+    size++;
     fill_fac = static_cast<float>(this->size) / m;
     std::cout << "ff: " << fill_fac << std::endl;
 
@@ -123,7 +97,6 @@ void Hash_map<T,Y>::insert(T key, Y data) {
         fill_fac = static_cast<float>(this->size) / m;
     }
 }
-
 
 
 template<class T, class Y>
@@ -135,8 +108,17 @@ void Hash_map<T,Y>::print_vec() {
     }
 }
 
+
 template<class T, class Y>
 void Hash_map<T,Y>::set_ff(int new_ff) {
     max_ff = new_ff;
     rehash_map();
+}
+
+
+template<class T, class Y>
+void Hash_map<T,Y>::dell_all(){
+    for (int i = 0; i < m; i++) 
+        if (mas_list[i].first != nullptr) mas_list[i].clear();
+    size = 0;
 }
