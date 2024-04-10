@@ -2,7 +2,6 @@
 #include <vector>
 
 
-
 template<class T, class Y>
 class Hash_map {
 private:
