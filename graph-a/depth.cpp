@@ -28,8 +28,11 @@ class Graph{
         }
 
         int find(std::vector<int> &par, int i){
-            while(i != par[i])
+            while(i != par[i]){
+                printf("-%d %d\n", i, par[i]);
                 i = par[i];
+            }
+            printf("------ %d\n", i);
             return i;
         }
 
@@ -185,14 +188,18 @@ void Graph::craskal(){
     for (int i = 0; i < this->size; i++)
         parent[i] = i;
 
+
     for (auto edge: edges){
         int a = find(parent, edge.src);
         int b = find(parent, edge.dst);
+        printf("** %d %d\n\n", a, b);
 
+        // if( edge.src != edge.dst){
         if( a != b){
             res.push_back(edge);
             // printf("-- %d %d %d\n", visited.size(), edge.src, edge.dst);
             parent[a] = b;
+            // parent[edge.src] = edge.dst;
         }
 
 
@@ -271,8 +278,8 @@ int main(){
     grph.add(4, 5, 4);
     // grph.print();
     // grph.floyd_warshall();
-    // grph.craskal();
-    grph.prim();
+    grph.craskal();
+    // grph.prim();
 
     // std::vector<int> d = grph.deikstra(0);
 
