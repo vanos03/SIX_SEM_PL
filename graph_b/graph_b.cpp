@@ -213,15 +213,15 @@ int main(){
 
     // tarian
 
-    Graph grph(7);
-    grph.add(0, 1, 0);
-    grph.add(0, 2, 0);
-    grph.add(1, 3, 0);
-    grph.add(2, 3, 0);
-    grph.add(2, 5, 0);
-    grph.add(3, 6, 0);
-    grph.add(4, 5, 0);
-    grph.add(5, 6, 0);
+    // Graph grph(7);
+    // grph.add(0, 1, 0);
+    // grph.add(0, 2, 0);
+    // grph.add(1, 3, 0);
+    // grph.add(2, 3, 0);
+    // grph.add(2, 5, 0);
+    // grph.add(3, 6, 0);
+    // grph.add(4, 5, 0);
+    // grph.add(5, 6, 0);
 
 
     // // circle/fleri
@@ -261,7 +261,7 @@ int main(){
 
 
 
-    grph.dfs_inv(6);
+    // grph.dfs_inv(6);
     // grph.fleri(5);
     // grph.cirle();
     // grph.kosaraio();
