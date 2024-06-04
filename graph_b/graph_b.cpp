@@ -27,6 +27,7 @@ class Graph{
 
         void dfs_i(int x, std::vector<bool>& visited);
         void find_euler_path(int v);
+        int check_brige(int u, int v);
 
         
 
@@ -81,7 +82,6 @@ void Graph::dfs_i(int x, std::vector<bool>& visited){
     for (auto e: child)
         if(visited[e.dst] == false) dfs_i(e.dst, visited);
     res.push(x);
-    printf("%d \n", x);
 }
 
 
@@ -98,50 +98,51 @@ void Graph::dfs_inv(int start_vert){
     printf("\n");
 }
 
+int Graph::check_brige(int u, int v){
+    std::vector<bool> visited(this->size, false);
+    dfs_i(u, visited);
+
+    return visited[v];
+}
 
 
 void Graph::fleri(int start_vert){
-    
-    std::vector<edge> res;
-    std::vector<int> visited;
-    visited.resize(this->size);
-    int v = start_vert;
-    int v_dst = -1;
-    visited[v] = 1;
-    int c = this->edges.size();
 
-    while (c > 0){
-        if (edges[v].size() > 1){
-            for (int i = 0; i < edges[v].size(); i++){
-                // printf("qeqeqe %d %d\n", edges[edges[v][i]].size(), edges[v][i]);
-                if ((edges[edges[v][i]].size() > 1) && (visited[edges[v][i]] != 1)){
-                    // printf("------ %d %d\n", edges[edges[v][i]].size(), edges[v][i]);
-                    v_dst = edges[v][i];
-                    break;
+    std::vector<edge> res;
+    int v = graph.back().src;
+    printf("%d\n", v);
+    
+
+    while (!graph.empty()){
+        for (int i = 0; i < graph.size(); i++){
+            edge e;
+            if ((graph[i].src == v) || (graph[i].dst == v)){
+                if (graph[i].src == v){
+                    if ((check_brige(graph[i].src, graph[i].dst) != 0) || (edges[graph[i].dst].size() > 1)){
+                        e = graph[i];
+                        graph.erase(graph.begin() +i);
+                        
+                        v = e.dst;
+                    }
                 }
+                if (graph[i].dst == v){
+                    if ((check_brige(graph[i].dst, graph[i].src) != 0) || (edges[graph[i].src].size() > 1)){
+                        e = {graph[i].dst, graph[i].src, 0};
+                        graph.erase(graph.begin() +i);
+                        
+                        v = e.dst;
+                    }
+                }
+
+                res.push_back(e);
             }
         }
-        if (v == v_dst) {
-            edge e = {v, v_dst, 0};
-            res.push_back(e);
-            break;
-        }
-
-        edge e = {v, v_dst, 0};
-        c--;
-
-        auto it = std::find(edges[v].begin(), edges[v].end(), v_dst);
-        edges[v].erase(it);
-       
-        res.push_back(e);
-        
-        v = v_dst;
-        visited[v] = 1;
 
     }
-
     for (int i = 0; i < res.size(); i++)
-        printf("%d ", res[i]);
+        printf("%d %d\n", res[i].src, res[i].dst);
+    
+    
 }
 
 void Graph::find_euler_path(int v){
@@ -224,20 +225,20 @@ int main(){
     // grph.add(5, 6, 0);
 
 
-    // // circle/fleri
+    // circle/fleri
 
-    // Graph grph(6);
-    // grph.add(0, 1, 0);
-    // grph.add(0, 2, 0);
-    // grph.add(0, 3, 0);
-    // grph.add(0, 4, 0);
-    // grph.add(1, 2, 0);
-    // grph.add(1, 3, 0);
-    // grph.add(1, 4, 0);
-    // grph.add(2, 3, 0);
-    // grph.add(2, 5, 0);
-    // grph.add(3, 4, 0);
-    // grph.add(4, 5, 0);
+    Graph grph(6);
+    grph.add(0, 1, 0);
+    grph.add(0, 2, 0);
+    grph.add(0, 3, 0);
+    grph.add(0, 4, 0);
+    grph.add(1, 2, 0);
+    grph.add(1, 3, 0);
+    grph.add(1, 4, 0);
+    grph.add(2, 3, 0);
+    grph.add(2, 5, 0);
+    grph.add(3, 4, 0);
+    grph.add(4, 5, 0);
 
     //kurasaio
     // Graph grph(8);
@@ -262,7 +263,7 @@ int main(){
 
 
     // grph.dfs_inv(6);
-    // grph.fleri(5);
+    grph.fleri(0);
     // grph.cirle();
     // grph.kosaraio();
 
